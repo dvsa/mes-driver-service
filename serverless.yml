@@ -1,0 +1,27 @@
+service: mes-microservices-starter-template
+
+provider:
+  name: aws
+  runtime: nodejs16.x
+  stage: ${opt:stage, 'dev'}
+
+package:
+  individually: true
+
+functions:
+  getLambda:
+    handler: src/functions/getLambda/framework/handler.handler
+    events:
+      - http:
+          path: 'data/{value}'
+          method: get
+custom:
+  stages:
+    - dev
+  webpack:
+    webpackConfig: 'webpack-sls-offline.config.js'
+
+plugins:
+  - serverless-dotenv-plugin
+  - serverless-webpack
+  - serverless-offline
