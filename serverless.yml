@@ -1,4 +1,4 @@
-service: mes-microservices-starter-template
+service: mes-driver-service
 
 provider:
   name: aws
@@ -9,11 +9,11 @@ package:
   individually: true
 
 functions:
-  getLambda:
-    handler: src/functions/getLambda/framework/handler.handler
+  getPhotograph:
+    handler: src/functions/getPhotograph/framework/handler.handler
     events:
       - http:
-          path: 'data/{value}'
+          path: 'driver/photograph/{drivingLicenceNumber?}'
           method: get
 custom:
   stages:
