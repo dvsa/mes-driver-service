@@ -1,16 +1,16 @@
 {
-  "name": "mes-microservices-starter-template",
+  "name": "mes-driver-service",
   "version": "0.1.0",
   "author": "DVSA",
   "license": "MIT",
   "description": "A starter template for lambda microservices in the MES project",
-  "homepage": "https://github.com/dvsa/mes-microservices-starter-template#README.md",
+  "homepage": "https://github.com/dvsa/mes-driver-service#README.md",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/dvsa/mes-microservices-starter-template.git"
+    "url": "git+https://github.com/dvsa/mes-driver-service.git"
   },
   "bugs": {
-    "url": "https://github.com/dvsa/mes-microservices-starter-template/issues"
+    "url": "https://github.com/dvsa/mes-driver-service/issues"
   },
   "scripts": {
     "clean": "rimraf build artefacts",
@@ -21,7 +21,7 @@
     "package": "./package.sh",
     "prepare": "husky install",
     "prepush": "npm run security-scan && npm run lint && npm test",
-    "security-scan": "git secrets --scan",
+    "security-scan": "git secrets --scan | scanrepo",
     "start": "npm run compile && sls offline start",
     "test": "npm run compile && jasmine",
     "test:integration": "npm run compile && jasmine \"build/**/*int.js\"",
@@ -29,7 +29,10 @@
   },
   "dependencies": {
     "@dvsa/mes-microservice-common": "^0.8.1",
-    "aws-sdk": "^2.1200.0"
+    "aws-sdk": "^2.1200.0",
+    "axios": "^0.27.2",
+    "jwt-decode": "^3.1.2",
+    "qs": "^6.11.0"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.84",
@@ -60,6 +63,7 @@
     "supertest": "^6.2.4",
     "ts-loader": "^9.3.1",
     "ts-node": "^10.9.1",
+    "typemoq": "^2.1.0",
     "typescript": "^4.7.4",
     "webpack": "^5.74.0",
     "webpack-cli": "^4.10.0",

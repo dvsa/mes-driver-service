@@ -1,6 +1,6 @@
-# mes-microservices-starter-template
+# mes-driver-service
 
-A serverless microservice template.
+A serverless microservice responsible for responsible for retrieving driver data for candidates.
 
 ## Structure
 
@@ -13,20 +13,12 @@ As per the principles of Hexagonal Architecture, each function has the following
 * `application` - contains all Inbound and Outbound Ports, doesn't use any external/proprietary APIs - depends upon...
 * `domain` - contains all domain objects (Aggregates, Objects, Value classes etc) with all "business logic" (not just anaemic data holders), doesn't use any external/proprietary APIs.
 
-## Bootstrap
-
-The domain model for the service is maintained as a JSON Schema. In order to compile the project, you need to generate the type information:
-
-```shell
-npm run bootstrap
-```
-
 ## Run locally
 
 Use the following script to spin up the microservice locally
 
 ```shell
-npm start
+npm run start
 ```
 
 ## Build
@@ -52,7 +44,7 @@ npm run package -- get,set
 To run the unit tests, simply run:
 
 ```shell
-npm test
+npm run test
 ```
 
 ## Testing workflows locally
