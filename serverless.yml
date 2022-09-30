@@ -15,6 +15,12 @@ functions:
       - http:
           path: 'driver/photograph/{drivingLicenceNumber?}'
           method: get
+  getSignature:
+    handler: src/functions/getSignature/framework/handler.handler
+    events:
+      - http:
+          path: 'driver/signature/{drivingLicenceNumber?}'
+          method: get
 custom:
   stages:
     - dev

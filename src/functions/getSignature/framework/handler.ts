@@ -1,29 +1,32 @@
 import { APIGatewayProxyEvent } from 'aws-lambda';
 import {
-  bootstrapLogging, error, warn,
+  bootstrapLogging,
+  error,
+  warn,
 } from '@dvsa/mes-microservice-common/application/utils/logger';
-import { HttpStatus } from '../../../common/application/api/HttpStatus';
-import createResponse from '../../../common/application/utils/createResponse';
 import Response from '../../../common/application/api/Response';
-import { getMicrosoftTokenResponse } from '../../../common/application/auth/GetToken';
-import { findDriverPhotograph } from '../../../common/application/driver/FindDriverPhotograph';
-import { getDrivingLicenceNumber } from '../../../common/application/driver/GetDriverLicenceNumber';
+import createResponse from '../../../common/application/utils/createResponse';
 import { DriverErrorMessages } from '../../../common/application/driver/DriverErrMessages';
+import { HttpStatus } from '../../../common/application/api/HttpStatus';
+import { getDrivingLicenceNumber } from '../../../common/application/driver/GetDriverLicenceNumber';
+import { getMicrosoftTokenResponse } from '../../../common/application/auth/GetToken';
+import { findDriverSignature } from '../../../common/application/driver/FindDriverSignature';
 
 export async function handler(event: APIGatewayProxyEvent): Promise<Response> {
   try {
-    bootstrapLogging('get-driver-photograph', event);
+    bootstrapLogging('get-driver-signature', event);
 
-    const drivingLicenceNumber: string | null = getDrivingLicenceNumber(event.pathParameters);
+    const drivingLicenceNumber = getDrivingLicenceNumber(event.pathParameters);
+
     if (!drivingLicenceNumber) {
       return createResponse(DriverErrorMessages.BAD_REQUEST, HttpStatus.BAD_REQUEST);
     }
 
     const tokenResponse = await getMicrosoftTokenResponse();
 
-    const driverPayload = await findDriverPhotograph(drivingLicenceNumber, tokenResponse.access_token);
+    const driverPayload = await findDriverSignature(drivingLicenceNumber, tokenResponse.access_token);
     if (!driverPayload) {
-      warn(`No driver photograph record detected for ${drivingLicenceNumber}`);
+      warn(`No driver signature detected for ${drivingLicenceNumber}`);
       return createResponse(DriverErrorMessages.NOT_FOUND, HttpStatus.NOT_FOUND);
     }
 
