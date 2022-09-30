@@ -1,15 +1,15 @@
 import axios from 'axios';
 import { error } from '@dvsa/mes-microservice-common/application/utils/logger';
-import { DriverPhotograph } from '../../domain/driver-photograph.interface';
 import { getDriverAPIKey, getDriverBaseEndpoint } from '../../framework/DriverEndpoint';
 import { HttpStatus } from '../api/HttpStatus';
+import { DriverSignature } from '../../domain/driver-signature.interface';
 
 const axiosInstance = axios.create();
 
 export async function findDriverSignature(
   drivingLicenceNumber: string,
   token: string,
-): Promise<DriverPhotograph | null> {
+): Promise<DriverSignature | null> {
   try {
     const URL: string = `${getDriverBaseEndpoint()}/image/signature`;
 
