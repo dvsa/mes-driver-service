@@ -1,7 +1,5 @@
 import { APIGatewayProxyEvent } from 'aws-lambda';
-import {
-  bootstrapLogging, error, warn,
-} from '@dvsa/mes-microservice-common/application/utils/logger';
+import { bootstrapLogging, error, warn } from '@dvsa/mes-microservice-common/application/utils/logger';
 import { HttpStatus } from '../../../common/application/api/HttpStatus';
 import createResponse from '../../../common/application/utils/createResponse';
 import Response from '../../../common/application/api/Response';

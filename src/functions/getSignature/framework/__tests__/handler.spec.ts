@@ -1,5 +1,5 @@
 import { APIGatewayEvent } from 'aws-lambda';
-import { Mock, It } from 'typemoq';
+import { It, Mock } from 'typemoq';
 import * as FindDriverSignature from '../../../../common/application/driver/FindDriverSignature';
 import { DriverSignature } from '../../../../common/domain/driver-signature.interface';
 import * as createResponse from '../../../../common/application/utils/createResponse';

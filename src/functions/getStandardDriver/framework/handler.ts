@@ -4,25 +4,32 @@ import Response from '../../../common/application/api/Response';
 import createResponse from '../../../common/application/utils/createResponse';
 import { DriverErrorMessages } from '../../../common/application/driver/DriverErrMessages';
 import { HttpStatus } from '../../../common/application/api/HttpStatus';
-import { getDrivingLicenceNumber } from '../../../common/application/driver/GetDriverLicenceNumber';
 import { getMicrosoftTokenResponse } from '../../../common/application/auth/GetToken';
-import { findDriverSignature } from '../../../common/application/driver/FindDriverSignature';
+import { getStandardDriverData } from '../../../common/application/driver/GetStandardDriverData';
+import { isPayloadValid } from '../../../common/application/validation/ValidatePayload';
 
 export async function handler(event: APIGatewayProxyEvent): Promise<Response> {
   try {
-    bootstrapLogging('get-driver-signature', event);
+    bootstrapLogging('get-standard-driver-data', event);
 
-    const drivingLicenceNumber = getDrivingLicenceNumber(event.pathParameters);
+    const payload = JSON.parse(event.body as string);
 
-    if (!drivingLicenceNumber) {
-      return createResponse(DriverErrorMessages.BAD_REQUEST, HttpStatus.BAD_REQUEST);
+    if (!isPayloadValid(payload)) {
+      return createResponse(DriverErrorMessages.INVALID, HttpStatus.BAD_REQUEST);
     }
 
     const tokenResponse = await getMicrosoftTokenResponse();
 
-    const driverPayload = await findDriverSignature(drivingLicenceNumber, tokenResponse.access_token);
+    const { drivingLicenceNumber, enquiryRefNumber } = payload;
+
+    const driverPayload = await getStandardDriverData(
+      drivingLicenceNumber,
+      enquiryRefNumber,
+      tokenResponse.access_token,
+    );
+
     if (!driverPayload) {
-      warn(`No driver signature detected for ${drivingLicenceNumber}`);
+      warn(`No standard driver data detected for ${JSON.stringify(payload)}`);
       return createResponse(DriverErrorMessages.NOT_FOUND, HttpStatus.NOT_FOUND);
     }
 

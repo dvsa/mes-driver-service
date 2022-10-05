@@ -1,5 +1,5 @@
 import { APIGatewayEvent } from 'aws-lambda';
-import { Mock, It } from 'typemoq';
+import { It, Mock } from 'typemoq';
 import * as createResponse from '../../../../common/application/utils/createResponse';
 import * as FindDriverPhotograph from '../../../../common/application/driver/FindDriverPhotograph';
 import * as GetToken from '../../../../common/application/auth/GetToken';
