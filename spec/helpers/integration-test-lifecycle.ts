@@ -1,4 +1,4 @@
-import {ChildProcess, spawn} from 'child_process';
+import { ChildProcess, spawn } from 'child_process';
 
 let slsOfflineProcess: ChildProcess;
 

@@ -1,7 +1,7 @@
 import { APIGatewayEvent } from 'aws-lambda';
 import { It, Mock } from 'typemoq';
 import { DriverStandard } from '../../../../common/domain/driver-standard.interface';
-import * as GetStandardDriverData from '../../../../common/application/driver/GetStandardDriverData';
+import * as GetStandardDriverData from '../../../../common/application/driver/FindStandardDriverData';
 import * as createResponse from '../../../../common/application/utils/createResponse';
 import * as GetToken from '../../../../common/application/auth/GetToken';
 import { MicrosoftResponse } from '../../../../common/domain/token.interface';
@@ -18,10 +18,10 @@ describe('getStandardDriver handler', () => {
   let dummyApigwEvent: APIGatewayEvent;
   let createResponseSpy: jasmine.Spy;
 
-  const moqGetStandardDriver = Mock.ofInstance(GetStandardDriverData.getStandardDriverData);
+  const moqFindStandardDriver = Mock.ofInstance(GetStandardDriverData.findStandardDriver);
 
   beforeEach(() => {
-    moqGetStandardDriver.reset();
+    moqFindStandardDriver.reset();
     dummyApigwEvent = lambdaTestUtils.mockEventCreator.createAPIGatewayEvent({
       body: JSON.stringify({
         drivingLicenceNumber: '12345678',
@@ -29,7 +29,7 @@ describe('getStandardDriver handler', () => {
       }),
     });
     createResponseSpy = spyOn(createResponse, 'default');
-    spyOn(GetStandardDriverData, 'getStandardDriverData').and.callFake(moqGetStandardDriver.object);
+    spyOn(GetStandardDriverData, 'findStandardDriver').and.callFake(moqFindStandardDriver.object);
     spyOn(GetToken, 'getMicrosoftTokenResponse').and.returnValue(Promise.resolve({
       access_token: 'abc123',
     } as MicrosoftResponse));
@@ -38,7 +38,7 @@ describe('getStandardDriver handler', () => {
   describe('handler', () => {
     describe('200', () => {
       it('should return a successful response with the payload', async () => {
-        moqGetStandardDriver.setup(
+        moqFindStandardDriver.setup(
           (x) => x(It.isAnyString(), It.isAnyString(), It.isAnyString()),
         ).returns(() => Promise.resolve(mockStandardDriverResponse));
 
@@ -52,7 +52,7 @@ describe('getStandardDriver handler', () => {
     });
     describe('404', () => {
       it('should return a 404 not found when GetStandardDriver returns null', async () => {
-        moqGetStandardDriver.setup(
+        moqFindStandardDriver.setup(
           (x) => x(It.isAnyString(), It.isAnyString(), It.isAnyString()),
         ).returns(() => Promise.resolve(null));
 
@@ -82,7 +82,7 @@ describe('getStandardDriver handler', () => {
     });
     describe('500', () => {
       it('should return an internal server error', async () => {
-        moqGetStandardDriver.setup(
+        moqFindStandardDriver.setup(
           (x) => x(It.isAnyString(), It.isAnyString(), It.isAnyString()),
         ).throws(new Error('err'));
 

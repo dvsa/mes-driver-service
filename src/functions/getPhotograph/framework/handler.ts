@@ -12,7 +12,7 @@ export async function handler(event: APIGatewayProxyEvent): Promise<Response> {
   try {
     bootstrapLogging('get-driver-photograph', event);
 
-    const drivingLicenceNumber: string | null = getDrivingLicenceNumber(event.pathParameters);
+    const drivingLicenceNumber = getDrivingLicenceNumber(event.pathParameters);
     if (!drivingLicenceNumber) {
       return createResponse(DriverErrorMessages.BAD_REQUEST, HttpStatus.BAD_REQUEST);
     }

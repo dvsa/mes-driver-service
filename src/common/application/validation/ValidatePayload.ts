@@ -1,7 +1,7 @@
 import * as Joi from 'joi';
 import { error } from '@dvsa/mes-microservice-common/application/utils/logger';
 
-export const isPayloadValid = (payload: {drivingLicenceNumber: string; enquiryRefNumber: string;}): boolean => {
+export const isPayloadValid = (payload: { drivingLicenceNumber: string; enquiryRefNumber: string; }): boolean => {
   const schema = Joi.object({
     drivingLicenceNumber: Joi.string().required(),
     enquiryRefNumber: Joi.string().required(),

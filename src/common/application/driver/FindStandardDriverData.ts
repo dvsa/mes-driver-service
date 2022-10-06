@@ -6,7 +6,7 @@ import { DriverStandard } from '../../domain/driver-standard.interface';
 
 const axiosInstance = axios.create();
 
-export async function getStandardDriverData(
+export async function findStandardDriver(
   drivingLicenceNumber: string,
   enquiryRefNumber: string,
   token: string,

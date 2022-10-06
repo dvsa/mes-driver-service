@@ -13,7 +13,6 @@ export async function handler(event: APIGatewayProxyEvent): Promise<Response> {
     bootstrapLogging('get-driver-signature', event);
 
     const drivingLicenceNumber = getDrivingLicenceNumber(event.pathParameters);
-
     if (!drivingLicenceNumber) {
       return createResponse(DriverErrorMessages.BAD_REQUEST, HttpStatus.BAD_REQUEST);
     }
