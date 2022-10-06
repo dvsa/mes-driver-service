@@ -21,6 +21,12 @@ functions:
       - http:
           path: 'driver/signature/{drivingLicenceNumber?}'
           method: get
+  getStandardDriver:
+    handler: src/functions/getStandardDriver/framework/handler.handler
+    events:
+      - http:
+          path: 'driver/standard'
+          method: post
 custom:
   stages:
     - dev

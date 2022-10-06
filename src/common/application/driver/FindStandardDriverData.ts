@@ -1,21 +1,22 @@
 import axios from 'axios';
 import { error } from '@dvsa/mes-microservice-common/application/utils/logger';
-import { HttpStatus } from '../api/HttpStatus';
-import { DriverPhotograph } from '../../domain/driver-photograph.interface';
 import { getDriverAPIKey, getDriverBaseEndpoint } from '../../framework/DriverEndpoint';
+import { HttpStatus } from '../api/HttpStatus';
+import { DriverStandard } from '../../domain/driver-standard.interface';
 
 const axiosInstance = axios.create();
 
-export async function findDriverPhotograph(
+export async function findStandardDriver(
   drivingLicenceNumber: string,
+  enquiryRefNumber: string,
   token: string,
-): Promise<DriverPhotograph | null> {
+): Promise<DriverStandard | null> {
   try {
-    const URL: string = `${getDriverBaseEndpoint()}/image/photograph`;
+    const URL: string = `${getDriverBaseEndpoint()}/driver/standard`;
 
     const response = await axiosInstance.post(
       URL,
-      JSON.stringify({ drivingLicenceNumber }),
+      JSON.stringify({ drivingLicenceNumber, enquiryRefNumber }),
       {
         headers: {
           Authorization: token,

@@ -31,6 +31,7 @@
     "@dvsa/mes-microservice-common": "^0.8.1",
     "aws-sdk": "^2.1200.0",
     "axios": "^0.27.2",
+    "joi": "^17.6.2",
     "jwt-decode": "^3.1.2",
     "qs": "^6.11.0"
   },

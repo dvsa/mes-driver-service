@@ -3,7 +3,7 @@ import { error } from '@dvsa/mes-microservice-common/application/utils/logger';
 import { MicrosoftResponse } from '../../domain/token.interface';
 import { isJWTExpired } from './CheckTokenExpiry';
 import {
-  getGrantType, getClientSecret, getClientID, getScope, getTokenURL,
+  getClientID, getClientSecret, getGrantType, getScope, getTokenURL,
 } from '../../framework/Credentials';
 
 const qs = require('qs');

@@ -1,7 +1,7 @@
 import { APIGatewayEvent } from 'aws-lambda';
 import { It, Mock } from 'typemoq';
-import * as FindDriverSignature from '../../../../common/application/driver/FindDriverSignature';
-import { DriverSignature } from '../../../../common/domain/driver-signature.interface';
+import { DriverStandard } from '../../../../common/domain/driver-standard.interface';
+import * as GetStandardDriverData from '../../../../common/application/driver/FindStandardDriverData';
 import * as createResponse from '../../../../common/application/utils/createResponse';
 import * as GetToken from '../../../../common/application/auth/GetToken';
 import { MicrosoftResponse } from '../../../../common/domain/token.interface';
@@ -10,27 +10,26 @@ import { DriverErrorMessages } from '../../../../common/application/driver/Drive
 
 const lambdaTestUtils = require('aws-lambda-test-utils');
 
-describe('getSignature handler', () => {
-  const mockSignatureResponse: DriverSignature = {
-    signature: {
-      image: '/some-img-string-12312321=',
-      imageFormat: 'image/jpeg',
-    },
-  };
+describe('getStandardDriver handler', () => {
+  const mockStandardDriverResponse = {
+    driver: { lastName: 'dsvsdvsdv' },
+  } as DriverStandard;
+
   let dummyApigwEvent: APIGatewayEvent;
   let createResponseSpy: jasmine.Spy;
 
-  const moqFindDriverSignature = Mock.ofInstance(FindDriverSignature.findDriverSignature);
+  const moqFindStandardDriver = Mock.ofInstance(GetStandardDriverData.findStandardDriver);
 
   beforeEach(() => {
-    moqFindDriverSignature.reset();
+    moqFindStandardDriver.reset();
     dummyApigwEvent = lambdaTestUtils.mockEventCreator.createAPIGatewayEvent({
-      pathParameters: {
+      body: JSON.stringify({
         drivingLicenceNumber: '12345678',
-      },
+        enquiryRefNumber: '123456789',
+      }),
     });
     createResponseSpy = spyOn(createResponse, 'default');
-    spyOn(FindDriverSignature, 'findDriverSignature').and.callFake(moqFindDriverSignature.object);
+    spyOn(GetStandardDriverData, 'findStandardDriver').and.callFake(moqFindStandardDriver.object);
     spyOn(GetToken, 'getMicrosoftTokenResponse').and.returnValue(Promise.resolve({
       access_token: 'abc123',
     } as MicrosoftResponse));
@@ -39,22 +38,22 @@ describe('getSignature handler', () => {
   describe('handler', () => {
     describe('200', () => {
       it('should return a successful response with the payload', async () => {
-        moqFindDriverSignature.setup(
-          (x) => x(It.isAnyString(), It.isAnyString()),
-        ).returns(() => Promise.resolve(mockSignatureResponse));
+        moqFindStandardDriver.setup(
+          (x) => x(It.isAnyString(), It.isAnyString(), It.isAnyString()),
+        ).returns(() => Promise.resolve(mockStandardDriverResponse));
 
         createResponseSpy.and.returnValue({ statusCode: 200 });
 
         const resp = await handler(dummyApigwEvent);
 
         expect(resp.statusCode).toBe(200);
-        expect(createResponse.default).toHaveBeenCalledWith(mockSignatureResponse, 200);
+        expect(createResponse.default).toHaveBeenCalledWith(mockStandardDriverResponse, 200);
       });
     });
     describe('404', () => {
-      it('should return a 404 not found when FindDriverSignature returns null', async () => {
-        moqFindDriverSignature.setup(
-          (x) => x(It.isAnyString(), It.isAnyString()),
+      it('should return a 404 not found when GetStandardDriver returns null', async () => {
+        moqFindStandardDriver.setup(
+          (x) => x(It.isAnyString(), It.isAnyString(), It.isAnyString()),
         ).returns(() => Promise.resolve(null));
 
         createResponseSpy.and.returnValue({ statusCode: 404 });
@@ -66,9 +65,11 @@ describe('getSignature handler', () => {
       });
     });
     describe('400', () => {
-      it('should return a 400 when no path param matching specified is found', async () => {
+      it('should return a 400 when body is invalid', async () => {
         dummyApigwEvent = lambdaTestUtils.mockEventCreator.createAPIGatewayEvent({
-          pathParameters: {},
+          body: JSON.stringify({
+            drivingLicenceNumber: '12345678',
+          }),
         });
 
         createResponseSpy.and.returnValue({ statusCode: 400 });
@@ -76,13 +77,13 @@ describe('getSignature handler', () => {
         const resp = await handler(dummyApigwEvent);
 
         expect(resp.statusCode).toBe(400);
-        expect(createResponse.default).toHaveBeenCalledWith(DriverErrorMessages.BAD_REQUEST, 400);
+        expect(createResponse.default).toHaveBeenCalledWith(DriverErrorMessages.INVALID, 400);
       });
     });
     describe('500', () => {
       it('should return an internal server error', async () => {
-        moqFindDriverSignature.setup(
-          (x) => x(It.isAnyString(), It.isAnyString()),
+        moqFindStandardDriver.setup(
+          (x) => x(It.isAnyString(), It.isAnyString(), It.isAnyString()),
         ).throws(new Error('err'));
 
         createResponseSpy.and.returnValue({ statusCode: 500 });
