@@ -1,6 +1,6 @@
 import { APIGatewayEvent } from 'aws-lambda';
 import { It, Mock } from 'typemoq';
-import { DriverStandard } from '../../../../common/domain/driver-standard.interface';
+import { DriverStandard } from '@dvsa/mes-driver-schema';
 import * as GetStandardDriverData from '../../../../common/application/driver/FindStandardDriverData';
 import * as createResponse from '../../../../common/application/utils/createResponse';
 import * as GetToken from '../../../../common/application/auth/GetToken';

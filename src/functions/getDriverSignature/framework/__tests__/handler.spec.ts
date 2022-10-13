@@ -1,18 +1,18 @@
 import { APIGatewayEvent } from 'aws-lambda';
 import { It, Mock } from 'typemoq';
+import { DriverSignature } from '@dvsa/mes-driver-schema';
+import * as FindDriverSignature from '../../../../common/application/driver/FindDriverSignature';
 import * as createResponse from '../../../../common/application/utils/createResponse';
-import * as FindDriverPhotograph from '../../../../common/application/driver/FindDriverPhotograph';
 import * as GetToken from '../../../../common/application/auth/GetToken';
-import { handler } from '../handler';
 import { MicrosoftResponse } from '../../../../common/domain/token.interface';
-import { DriverPhotograph } from '../../../../common/domain/driver-photograph.interface';
+import { handler } from '../handler';
 import { DriverErrorMessages } from '../../../../common/application/driver/DriverErrMessages';
 
 const lambdaTestUtils = require('aws-lambda-test-utils');
 
-describe('getPhotograph handler', () => {
-  const mockPhotographResponse: DriverPhotograph = {
-    photograph: {
+describe('getSignature handler', () => {
+  const mockSignatureResponse: DriverSignature = {
+    signature: {
       image: '/some-img-string-12312321=',
       imageFormat: 'image/jpeg',
     },
@@ -20,17 +20,17 @@ describe('getPhotograph handler', () => {
   let dummyApigwEvent: APIGatewayEvent;
   let createResponseSpy: jasmine.Spy;
 
-  const moqFindDriverPhotograph = Mock.ofInstance(FindDriverPhotograph.findDriverPhotograph);
+  const moqFindDriverSignature = Mock.ofInstance(FindDriverSignature.findDriverSignature);
 
   beforeEach(() => {
-    moqFindDriverPhotograph.reset();
+    moqFindDriverSignature.reset();
     dummyApigwEvent = lambdaTestUtils.mockEventCreator.createAPIGatewayEvent({
       pathParameters: {
         drivingLicenceNumber: '12345678',
       },
     });
     createResponseSpy = spyOn(createResponse, 'default');
-    spyOn(FindDriverPhotograph, 'findDriverPhotograph').and.callFake(moqFindDriverPhotograph.object);
+    spyOn(FindDriverSignature, 'findDriverSignature').and.callFake(moqFindDriverSignature.object);
     spyOn(GetToken, 'getMicrosoftTokenResponse').and.returnValue(Promise.resolve({
       access_token: 'abc123',
     } as MicrosoftResponse));
@@ -39,21 +39,21 @@ describe('getPhotograph handler', () => {
   describe('handler', () => {
     describe('200', () => {
       it('should return a successful response with the payload', async () => {
-        moqFindDriverPhotograph.setup(
+        moqFindDriverSignature.setup(
           (x) => x(It.isAnyString(), It.isAnyString()),
-        ).returns(() => Promise.resolve(mockPhotographResponse));
+        ).returns(() => Promise.resolve(mockSignatureResponse));
 
         createResponseSpy.and.returnValue({ statusCode: 200 });
 
         const resp = await handler(dummyApigwEvent);
 
         expect(resp.statusCode).toBe(200);
-        expect(createResponse.default).toHaveBeenCalledWith(mockPhotographResponse, 200);
+        expect(createResponse.default).toHaveBeenCalledWith(mockSignatureResponse, 200);
       });
     });
     describe('404', () => {
-      it('should return a 404 not found when FindDriverPhotograph returns null', async () => {
-        moqFindDriverPhotograph.setup(
+      it('should return a 404 not found when FindDriverSignature returns null', async () => {
+        moqFindDriverSignature.setup(
           (x) => x(It.isAnyString(), It.isAnyString()),
         ).returns(() => Promise.resolve(null));
 
@@ -81,7 +81,7 @@ describe('getPhotograph handler', () => {
     });
     describe('500', () => {
       it('should return an internal server error', async () => {
-        moqFindDriverPhotograph.setup(
+        moqFindDriverSignature.setup(
           (x) => x(It.isAnyString(), It.isAnyString()),
         ).throws(new Error('err'));
 

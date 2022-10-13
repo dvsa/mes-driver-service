@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { error } from '@dvsa/mes-microservice-common/application/utils/logger';
+import { DriverPhotograph } from '@dvsa/mes-driver-schema';
 import { HttpStatus } from '../api/HttpStatus';
-import { DriverPhotograph } from '../../domain/driver-photograph.interface';
 import { getDriverAPIKey, getDriverBaseEndpoint } from '../../framework/DriverEndpoint';
 
 const axiosInstance = axios.create();
