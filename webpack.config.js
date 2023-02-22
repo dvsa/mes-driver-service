@@ -25,9 +25,6 @@ module.exports = env => ({
   },
   resolve: {
     extensions: [ '.ts', '.js', '.json' ],
-    // alias: {
-    //   '@des-common/*': ["src/common/*"]
-    // },
   },
   output: {
     filename: `[name].js`,
@@ -35,7 +32,3 @@ module.exports = env => ({
     libraryTarget: 'commonjs'
   },
 });
-
-function root(localPath) {
-  return path.resolve(__dirname, localPath);
-}
