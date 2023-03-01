@@ -7,6 +7,7 @@ import { getMicrosoftTokenResponse } from '../../../common/application/auth/GetT
 import { findDriverPhotograph } from '../../../common/application/driver/FindDriverPhotograph';
 import { getDrivingLicenceNumber } from '../../../common/application/driver/GetDriverLicenceNumber';
 import { DriverErrorMessages } from '../../../common/application/driver/DriverErrMessages';
+import { Metric } from '../../../common/application/metric/metric';
 
 export async function handler(event: APIGatewayProxyEvent): Promise<Response> {
   try {
@@ -21,11 +22,11 @@ export async function handler(event: APIGatewayProxyEvent): Promise<Response> {
 
     const driverPayload = await findDriverPhotograph(drivingLicenceNumber, tokenResponse.access_token);
     if (!driverPayload) {
-      customMetric('DriverPhotographNotFound', 'Driver photo not found in DVLA system', drivingLicenceNumber);
+      customMetric(Metric.DriverPhotographNotFound, 'Driver photo not found in DVLA system', drivingLicenceNumber);
       return createResponse(DriverErrorMessages.NOT_FOUND, HttpStatus.NOT_FOUND);
     }
 
-    customMetric('DriverPhotographFound', 'Driver photo found in DVLA system');
+    customMetric(Metric.DriverPhotographFound, 'Driver photo found in DVLA system');
     return createResponse(driverPayload, HttpStatus.OK);
   } catch (err: unknown) {
     error('DriverPhotographUnknownError', err);

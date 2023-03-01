@@ -7,6 +7,7 @@ import { HttpStatus } from '../../../common/application/api/HttpStatus';
 import { getMicrosoftTokenResponse } from '../../../common/application/auth/GetToken';
 import { findStandardDriver } from '../../../common/application/driver/FindStandardDriverData';
 import { isPayloadValid } from '../../../common/application/validation/ValidatePayload';
+import { Metric } from '../../../common/application/metric/metric';
 
 export async function handler(event: APIGatewayProxyEvent): Promise<Response> {
   try {
@@ -24,14 +25,14 @@ export async function handler(event: APIGatewayProxyEvent): Promise<Response> {
     const driverPayload = await findStandardDriver(drivingLicenceNumber, enquiryRefNumber, tokenResponse.access_token);
     if (!driverPayload) {
       customMetric(
-        'DriverStandardDataNotFound',
+        Metric.DriverStandardDataNotFound,
         'Driver standard data not found in DVLA system',
         { drivingLicenceNumber, enquiryRefNumber },
       );
       return createResponse(DriverErrorMessages.NOT_FOUND, HttpStatus.NOT_FOUND);
     }
 
-    customMetric('DriverStandardDataFound', 'Driver standard data found in DVLA system');
+    customMetric(Metric.DriverStandardDataFound, 'Driver standard data found in DVLA system');
     return createResponse(driverPayload, HttpStatus.OK);
   } catch (err: unknown) {
     error('DriverStandardDataUnknownError', err);

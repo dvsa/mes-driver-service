@@ -7,6 +7,7 @@ import { HttpStatus } from '../../../common/application/api/HttpStatus';
 import { getDrivingLicenceNumber } from '../../../common/application/driver/GetDriverLicenceNumber';
 import { getMicrosoftTokenResponse } from '../../../common/application/auth/GetToken';
 import { findDriverSignature } from '../../../common/application/driver/FindDriverSignature';
+import { Metric } from '../../../common/application/metric/metric';
 
 export async function handler(event: APIGatewayProxyEvent): Promise<Response> {
   try {
@@ -21,11 +22,11 @@ export async function handler(event: APIGatewayProxyEvent): Promise<Response> {
 
     const driverPayload = await findDriverSignature(drivingLicenceNumber, tokenResponse.access_token);
     if (!driverPayload) {
-      customMetric('DriverSignatureNotFound', 'Driver signature not found in DVLA system', drivingLicenceNumber);
+      customMetric(Metric.DriverSignatureNotFound, 'Driver signature not found in DVLA system', drivingLicenceNumber);
       return createResponse(DriverErrorMessages.NOT_FOUND, HttpStatus.NOT_FOUND);
     }
 
-    customMetric('DriverSignatureFound', 'Driver signature found in DVLA system');
+    customMetric(Metric.DriverSignatureFound, 'Driver signature found in DVLA system');
     return createResponse(driverPayload, HttpStatus.OK);
   } catch (err: unknown) {
     error('DriverSignatureUnknownError', err);
