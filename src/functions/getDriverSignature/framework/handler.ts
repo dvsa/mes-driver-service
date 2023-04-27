@@ -1,5 +1,5 @@
 import { APIGatewayProxyEvent } from 'aws-lambda';
-import { bootstrapLogging, error, warn } from '@dvsa/mes-microservice-common/application/utils/logger';
+import { bootstrapLogging, customMetric, error } from '@dvsa/mes-microservice-common/application/utils/logger';
 import Response from '../../../common/application/api/Response';
 import createResponse from '../../../common/application/utils/createResponse';
 import { DriverErrorMessages } from '../../../common/application/driver/DriverErrMessages';
@@ -7,6 +7,7 @@ import { HttpStatus } from '../../../common/application/api/HttpStatus';
 import { getDrivingLicenceNumber } from '../../../common/application/driver/GetDriverLicenceNumber';
 import { getMicrosoftTokenResponse } from '../../../common/application/auth/GetToken';
 import { findDriverSignature } from '../../../common/application/driver/FindDriverSignature';
+import { Metric } from '../../../common/application/metric/metric';
 
 export async function handler(event: APIGatewayProxyEvent): Promise<Response> {
   try {
@@ -21,13 +22,14 @@ export async function handler(event: APIGatewayProxyEvent): Promise<Response> {
 
     const driverPayload = await findDriverSignature(drivingLicenceNumber, tokenResponse.access_token);
     if (!driverPayload) {
-      warn(`No driver signature detected for ${drivingLicenceNumber}`);
+      customMetric(Metric.DriverSignatureNotFound, 'Driver signature not found in DVLA system', drivingLicenceNumber);
       return createResponse(DriverErrorMessages.NOT_FOUND, HttpStatus.NOT_FOUND);
     }
 
+    customMetric(Metric.DriverSignatureFound, 'Driver signature found in DVLA system');
     return createResponse(driverPayload, HttpStatus.OK);
   } catch (err: unknown) {
-    error(err as string);
+    error('DriverSignatureUnknownError', err);
     return createResponse(DriverErrorMessages.INTERNAL_SERVER_ERROR, HttpStatus.INTERNAL_SERVER_ERROR);
   }
 }
