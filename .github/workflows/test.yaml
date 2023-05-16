@@ -1,22 +1,13 @@
 name: CI
 
-on: push
+on:
+  pull_request:
+    branches:
+      - develop
+      - 'release-**'
 
 jobs:
-  tests:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Setup Node
-        uses: actions/setup-node@v3
-        with:
-          node-version: '16'
-          cache: 'npm'
-      - name: update npm dependency
-        run: npm i -g npm@7
-      - name: Install dependencies
-        run: npm ci
-      - name: Run lint
-        run: npm run lint
-      - name: Run tests
-        run: npm run test
+  runs-ci:
+    uses: dvsa/des-workflow-actions/.github/workflows/ci-backend.yaml@main
+    secrets:
+      DES_ACCESS_TOKEN: ${{ secrets.DES_ACCESS_TOKEN }}

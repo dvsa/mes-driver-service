@@ -15,6 +15,7 @@ export async function handler(event: APIGatewayProxyEvent): Promise<Response> {
 
     const drivingLicenceNumber = getDrivingLicenceNumber(event.pathParameters);
     if (!drivingLicenceNumber) {
+      error(DriverErrorMessages.BAD_REQUEST);
       return createResponse(DriverErrorMessages.BAD_REQUEST, HttpStatus.BAD_REQUEST);
     }
 

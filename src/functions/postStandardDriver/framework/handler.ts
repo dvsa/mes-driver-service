@@ -15,6 +15,7 @@ export async function handler(event: APIGatewayProxyEvent): Promise<Response> {
 
     const payload = JSON.parse(event.body as string);
     if (!isPayloadValid(payload)) {
+      error(DriverErrorMessages.INVALID);
       return createResponse(DriverErrorMessages.INVALID, HttpStatus.BAD_REQUEST);
     }
 
