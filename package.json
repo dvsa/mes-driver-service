@@ -28,7 +28,7 @@
     "test:jasmine-coverage": "nyc npm run test"
   },
   "dependencies": {
-    "@dvsa/mes-microservice-common": "^0.8.1",
+    "@dvsa/mes-microservice-common": "^1.0.2",
     "@dvsa/mes-driver-schema": "^0.0.1",
     "aws-sdk": "^2.1200.0",
     "axios": "^0.27.2",

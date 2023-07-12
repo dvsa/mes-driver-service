@@ -1,0 +1,13 @@
+name: CI
+
+on:
+  pull_request:
+    branches:
+      - develop
+      - 'release-**'
+
+jobs:
+  runs-ci:
+    uses: dvsa/des-workflow-actions/.github/workflows/ci-backend.yaml@main
+    secrets:
+      DES_ACCESS_TOKEN: ${{ secrets.DES_ACCESS_TOKEN }}
