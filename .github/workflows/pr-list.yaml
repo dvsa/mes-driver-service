@@ -15,11 +15,15 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          echo "LIST=$(gh pr list --repo dvsa/mes-user-service --json number,title,author --jq '.[] | select(.author.login | contains("snyk") or contains("dependabot")) |  "https://github.com/dvsa/mes-logs-service/pull/" + (.number | tostring) as $url | [$url, .title] | @tsv' | awk -F $'\t' 'BEGIN { printf "| %-55s | %-110s |\n", "PR", "Title"}
-               { printf "| %-55s | %-110s |\n", $1, $2 }')" >> $GITHUB_OUTPUT
+          gh pr list --repo dvsa/mes-user-service --json number,title,author --jq '.[] | select(.author.login | contains("snyk") or contains("dependabot")) |  "https://github.com/dvsa/mes-logs-service/pull/" + (.number | tostring) as $url | [$url, .title] | @tsv' | awk -F $'\t' 'BEGIN { printf "| %-55s | %-110s |\n", "PR", "Title"}
+               { printf "| %-55s | %-110s |\n", $1, $2 }'
+          
+          echo "LIST=$(gh pr list --repo dvsa/mes-user-service --json number,title,author --jq '.[] | select(.author.login | contains("snyk") or contains("dependabot")) |  "https://github.com/dvsa/mes-logs-service/pull/" + (.number | tostring) as $url | [$url, .title] | @tsv' | awk -F $'\t' 'BEGIN { printf "| %-55s | %-110s |\n", "PR", "Title"} { printf "| %-55s | %-110s |\n", $1, $2 }')" >> $GITHUB_OUTPUT
+          
+          echo "LIST=$(gh pr list --repo dvsa/mes-user-service --json number,title,author --jq '.[] | select(.author.login | contains("snyk") or contains("dependabot")) |  "https://github.com/dvsa/mes-logs-service/pull/" + (.number | tostring) as $url | [$url, .title] | @tsv' | awk -F $'\t' 'BEGIN { printf "| %-55s | %-110s |\n", "PR", "Title"} { printf "| %-55s | %-110s |\n", $1, $2 }')" >> $GITHUB_OUTPUT          
 
       - name: 🔔 Microsoft Teams Notification
         uses: skitionek/notify-microsoft-teams@v1.0.4
         with:
           webhook_url: ${{ secrets.MSTEAMS_WEBHOOK }}
-          raw: ${{ steps.prs.outputs.LIST }}
+#          raw: ${{ steps.prs.outputs.LIST }}
