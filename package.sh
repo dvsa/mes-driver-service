@@ -25,7 +25,7 @@ for func_name in ${functions}; do
 done
 
 if [ -d coverage ]; then
-  coverage_filename="template-coverage-${version_num}-${git_rev}.zip"
+  coverage_filename="driver-coverage-${version_num}-${git_rev}.zip"
   coverage_path="${artefact_dir}${coverage_filename}"
   zip ${coverage_path} coverage
   echo "COVERAGE ARTIFACT: coverage => ${coverage_path}"
