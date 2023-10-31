@@ -1,20 +1,22 @@
 import { APIGatewayProxyEvent } from 'aws-lambda';
-import { bootstrapLogging, customMetric, error } from '@dvsa/mes-microservice-common/application/utils/logger';
-import Response from '../../../common/application/api/Response';
-import createResponse from '../../../common/application/utils/createResponse';
+import {
+  bootstrapLogging, customMetric, error,
+} from '@dvsa/mes-microservice-common/application/utils/logger';
+import { createResponse } from '@dvsa/mes-microservice-common/application/api/create-response';
+import { HttpStatus } from '@dvsa/mes-microservice-common/application/api/http-status';
 import { DriverErrorMessages } from '../../../common/application/driver/DriverErrMessages';
-import { HttpStatus } from '../../../common/application/api/HttpStatus';
 import { getMicrosoftTokenResponse } from '../../../common/application/auth/GetToken';
 import { findStandardDriver } from '../../../common/application/driver/FindStandardDriverData';
 import { isPayloadValid } from '../../../common/application/validation/ValidatePayload';
 import { Metric } from '../../../common/application/metric/metric';
 
-export async function handler(event: APIGatewayProxyEvent): Promise<Response> {
+export async function handler(event: APIGatewayProxyEvent) {
   try {
-    bootstrapLogging('get-standard-driver-data', event);
+    bootstrapLogging('post-standard-driver-data', event);
 
     const payload = JSON.parse(event.body as string);
     if (!isPayloadValid(payload)) {
+      error(DriverErrorMessages.INVALID, payload);
       return createResponse(DriverErrorMessages.INVALID, HttpStatus.BAD_REQUEST);
     }
 

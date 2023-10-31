@@ -1,7 +1,8 @@
 import { APIGatewayEvent } from 'aws-lambda';
 import { It, Mock } from 'typemoq';
 import { DriverPhotograph } from '@dvsa/mes-driver-schema';
-import * as createResponse from '../../../../common/application/utils/createResponse';
+import * as response from '@dvsa/mes-microservice-common/application/api/create-response';
+
 import * as FindDriverPhotograph from '../../../../common/application/driver/FindDriverPhotograph';
 import * as GetToken from '../../../../common/application/auth/GetToken';
 import { handler } from '../handler';
@@ -29,7 +30,7 @@ describe('getPhotograph handler', () => {
         drivingLicenceNumber: '12345678',
       },
     });
-    createResponseSpy = spyOn(createResponse, 'default');
+    createResponseSpy = spyOn(response, 'createResponse');
     spyOn(FindDriverPhotograph, 'findDriverPhotograph').and.callFake(moqFindDriverPhotograph.object);
     spyOn(GetToken, 'getMicrosoftTokenResponse').and.returnValue(Promise.resolve({
       access_token: 'abc123',
@@ -48,7 +49,7 @@ describe('getPhotograph handler', () => {
         const resp = await handler(dummyApigwEvent);
 
         expect(resp.statusCode).toBe(200);
-        expect(createResponse.default).toHaveBeenCalledWith(mockPhotographResponse, 200);
+        expect(response.createResponse).toHaveBeenCalledWith(mockPhotographResponse, 200);
       });
     });
     describe('404', () => {
@@ -62,7 +63,7 @@ describe('getPhotograph handler', () => {
         const resp = await handler(dummyApigwEvent);
 
         expect(resp.statusCode).toBe(404);
-        expect(createResponse.default).toHaveBeenCalledWith(DriverErrorMessages.NOT_FOUND, 404);
+        expect(response.createResponse).toHaveBeenCalledWith(DriverErrorMessages.NOT_FOUND, 404);
       });
     });
     describe('400', () => {
@@ -76,7 +77,7 @@ describe('getPhotograph handler', () => {
         const resp = await handler(dummyApigwEvent);
 
         expect(resp.statusCode).toBe(400);
-        expect(createResponse.default).toHaveBeenCalledWith(DriverErrorMessages.BAD_REQUEST, 400);
+        expect(response.createResponse).toHaveBeenCalledWith(DriverErrorMessages.BAD_REQUEST, 400);
       });
     });
     describe('500', () => {
@@ -90,7 +91,7 @@ describe('getPhotograph handler', () => {
         const resp = await handler(dummyApigwEvent);
 
         expect(resp.statusCode).toBe(500);
-        expect(createResponse.default).toHaveBeenCalledWith(DriverErrorMessages.INTERNAL_SERVER_ERROR, 500);
+        expect(response.createResponse).toHaveBeenCalledWith(DriverErrorMessages.INTERNAL_SERVER_ERROR, 500);
       });
     });
   });
