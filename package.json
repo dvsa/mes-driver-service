@@ -21,7 +21,7 @@
     "package": "./package.sh",
     "prepare": "husky install",
     "prepush": "npm run security-scan && npm run lint && npm test",
-    "security-scan": "git secrets --scan | scanrepo",
+    "security-scan": "git secrets --scan && git log -p | scanrepo",
     "start": "npm run compile && sls offline start",
     "test": "npm run compile && jasmine",
     "test:integration": "npm run compile && jasmine \"build/**/*int.js\"",
