@@ -21,7 +21,7 @@
     "package": "./package.sh",
     "prepare": "husky install",
     "prepush": "npm run security-scan && npm run lint && npm test",
-    "security-scan": "git secrets --scan | scanrepo",
+    "security-scan": "git secrets --scan && git log -p | scanrepo",
     "start": "npm run compile && sls offline start",
     "test": "npm run compile && jasmine",
     "test:integration": "npm run compile && jasmine \"build/**/*int.js\"",
@@ -29,9 +29,8 @@
   },
   "dependencies": {
     "@dvsa/mes-driver-schema": "^0.0.2",
-    "@dvsa/mes-microservice-common": "^1.0.2",
-    "aws-sdk": "^2.1478.0",
-    "axios": "^1.5.1",
+    "@dvsa/mes-microservice-common": "1.1.0",
+    "axios": "^1.6.0",
     "joi": "^17.11.0",
     "jwt-decode": "^3.1.2",
     "qs": "^6.11.2"
@@ -41,6 +40,7 @@
     "@types/jasmine": "^5.1.1",
     "@types/node": "^18.18.6",
     "@types/supertest": "^2.0.15",
+    "@types/qs": "^6.9.9",
     "@typescript-eslint/eslint-plugin": "^6.8.0",
     "@typescript-eslint/parser": "^6.8.0",
     "aws-lambda-test-utils": "^1.3.0",

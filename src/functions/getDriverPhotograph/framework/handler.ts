@@ -1,20 +1,22 @@
 import { APIGatewayProxyEvent } from 'aws-lambda';
-import { bootstrapLogging, customMetric, error } from '@dvsa/mes-microservice-common/application/utils/logger';
-import { HttpStatus } from '../../../common/application/api/HttpStatus';
-import createResponse from '../../../common/application/utils/createResponse';
-import Response from '../../../common/application/api/Response';
+import { createResponse } from '@dvsa/mes-microservice-common/application/api/create-response';
+import { HttpStatus } from '@dvsa/mes-microservice-common/application/api/http-status';
+import {
+  bootstrapLogging, customMetric, error,
+} from '@dvsa/mes-microservice-common/application/utils/logger';
+import { getPathParam } from '@dvsa/mes-microservice-common/framework/validation/event-validation';
 import { getMicrosoftTokenResponse } from '../../../common/application/auth/GetToken';
 import { findDriverPhotograph } from '../../../common/application/driver/FindDriverPhotograph';
-import { getDrivingLicenceNumber } from '../../../common/application/driver/GetDriverLicenceNumber';
 import { DriverErrorMessages } from '../../../common/application/driver/DriverErrMessages';
 import { Metric } from '../../../common/application/metric/metric';
 
-export async function handler(event: APIGatewayProxyEvent): Promise<Response> {
+export async function handler(event: APIGatewayProxyEvent) {
   try {
     bootstrapLogging('get-driver-photograph', event);
 
-    const drivingLicenceNumber = getDrivingLicenceNumber(event.pathParameters);
+    const drivingLicenceNumber = getPathParam(event.pathParameters, 'drivingLicenceNumber');
     if (!drivingLicenceNumber) {
+      error(DriverErrorMessages.BAD_REQUEST);
       return createResponse(DriverErrorMessages.BAD_REQUEST, HttpStatus.BAD_REQUEST);
     }
 
