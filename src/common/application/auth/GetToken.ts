@@ -7,7 +7,7 @@ import {
   getClientID, getClientSecret, getGrantType, getScope, getTokenURL,
 } from '../../framework/Credentials';
 
-const axiosClient = axios.create();
+export const axiosClient = axios.create();
 let tokenResponse: AxiosResponse<MicrosoftResponse>;
 
 async function getNewTokenResponse(): Promise<AxiosResponse<MicrosoftResponse>> {

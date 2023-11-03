@@ -3,7 +3,7 @@ import { DriverPhotograph } from '@dvsa/mes-driver-schema';
 import { HttpStatus } from '@dvsa/mes-microservice-common/application/api/http-status';
 import { getDriverAPIKey, getDriverBaseEndpoint } from '../../framework/DriverEndpoint';
 
-const axiosInstance = axios.create();
+export const axiosInstance = axios.create();
 
 export async function findDriverPhotograph(
   drivingLicenceNumber: string,
