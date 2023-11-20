@@ -12,7 +12,8 @@ permissions:
 
 jobs:
   runs-deploy:
-    uses: dvsa/des-workflow-actions/.github/workflows/deploy-backend.yaml@main
+    uses: dvsa/des-workflow-actions/.github/workflows/deploy-backend.yaml@add-env-input-arg
+    secrets: inherit
     with:
       component: 'api'
-    secrets: inherit
+      env: 'mattb'
