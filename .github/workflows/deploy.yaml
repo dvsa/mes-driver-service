@@ -2,6 +2,15 @@ name: Deploy
 
 on:
   workflow_dispatch:
+    inputs:
+      env:
+        description: The environment to deploy to
+        type: choice
+        default: dev
+        options:
+          - dev
+          - mattb
+          - andys
   push:
     branches:
       - develop
@@ -16,4 +25,4 @@ jobs:
     secrets: inherit
     with:
       component: 'api'
-      env: 'mattb'
+      env: ${{ inputs.env || 'dev' }}
