@@ -30,7 +30,7 @@
   "dependencies": {
     "@dvsa/mes-driver-schema": "^0.0.2",
     "@dvsa/mes-microservice-common": "1.1.0",
-    "axios": "^1.6.0",
+    "axios": "^1.6.5",
     "joi": "^17.11.0",
     "jwt-decode": "^3.1.2",
     "qs": "^6.11.2"
@@ -69,7 +69,8 @@
     "typescript": "^5.2.2",
     "webpack": "^5.89.0",
     "webpack-cli": "^5.1.4",
-    "yamljs": "^0.3.0"
+    "yamljs": "^0.3.0",
+    "snyk": "^1.1269.0"
   },
   "lint-staged": {
     "./src/**/*.ts": [
