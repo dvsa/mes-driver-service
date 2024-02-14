@@ -1,0 +1,16 @@
+name: Create Release Manifest
+on:
+  push:
+    tags:
+      - release-*
+
+permissions:
+  id-token: write
+  contents: write
+
+jobs:
+  release-manifest:
+    uses: dvsa/des-workflow-actions/.github/workflows/release-manifest.yaml@main
+    with:
+      component: 'api'
+    secrets: inherit
