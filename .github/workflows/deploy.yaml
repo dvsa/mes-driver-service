@@ -2,6 +2,15 @@ name: Deploy
 
 on:
   workflow_dispatch:
+    inputs:
+      env:
+        description: The environment to deploy to
+        type: choice
+        default: dev
+        options:
+          - dev
+          - mattb
+          - andys
   push:
     branches:
       - develop
@@ -12,7 +21,8 @@ permissions:
 
 jobs:
   runs-deploy:
-    uses: dvsa/des-workflow-actions/.github/workflows/deploy-backend.yaml@main
+    uses: dvsa/des-workflow-actions/.github/workflows/deploy-backend.yaml@add-env-input-arg
+    secrets: inherit
     with:
       component: 'api'
-    secrets: inherit
+      env: ${{ inputs.env || 'dev' }}

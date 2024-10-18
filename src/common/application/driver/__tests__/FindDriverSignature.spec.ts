@@ -1,4 +1,3 @@
-import { describe } from 'node:test';
 import MockAdapter from 'axios-mock-adapter';
 import { DriverSignature } from '@dvsa/mes-driver-schema';
 import { AxiosError } from 'axios';
