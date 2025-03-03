@@ -30,7 +30,7 @@
   },
   "dependencies": {
     "@dvsa/mes-driver-schema": "^0.0.2",
-    "@dvsa/mes-microservice-common": "1.1.6",
+    "@dvsa/mes-microservice-common": "1.1.12",
     "axios": "^1.6.5",
     "joi": "^17.11.0",
     "jwt-decode": "^3.1.2",
