@@ -4,9 +4,7 @@ import { DriverPhotograph } from '@dvsa/mes-driver-schema';
 import * as response from '@dvsa/mes-microservice-common/application/api/create-response';
 
 import * as FindDriverPhotograph from '../../../../common/application/driver/FindDriverPhotograph';
-import * as GetToken from '../../../../common/application/auth/GetToken';
 import { handler } from '../handler';
-import { MicrosoftResponse } from '../../../../common/domain/token.interface';
 import { DriverErrorMessages } from '../../../../common/application/driver/DriverErrMessages';
 
 const lambdaTestUtils = require('aws-lambda-test-utils');
@@ -32,16 +30,13 @@ describe('getPhotograph handler', () => {
     });
     createResponseSpy = spyOn(response, 'createResponse');
     spyOn(FindDriverPhotograph, 'findDriverPhotograph').and.callFake(moqFindDriverPhotograph.object);
-    spyOn(GetToken, 'getMicrosoftTokenResponse').and.returnValue(Promise.resolve({
-      access_token: 'abc123',
-    } as MicrosoftResponse));
   });
 
   describe('handler', () => {
     describe('200', () => {
       it('should return a successful response with the payload', async () => {
         moqFindDriverPhotograph.setup(
-          (x) => x(It.isAnyString(), It.isAnyString()),
+          (x) => x(It.isAnyString()),
         ).returns(() => Promise.resolve(mockPhotographResponse));
 
         createResponseSpy.and.returnValue({ statusCode: 200 });
@@ -55,7 +50,7 @@ describe('getPhotograph handler', () => {
     describe('404', () => {
       it('should return a 404 not found when FindDriverPhotograph returns null', async () => {
         moqFindDriverPhotograph.setup(
-          (x) => x(It.isAnyString(), It.isAnyString()),
+          (x) => x(It.isAnyString()),
         ).returns(() => Promise.resolve(null));
 
         createResponseSpy.and.returnValue({ statusCode: 404 });
@@ -83,7 +78,7 @@ describe('getPhotograph handler', () => {
     describe('500', () => {
       it('should return an internal server error', async () => {
         moqFindDriverPhotograph.setup(
-          (x) => x(It.isAnyString(), It.isAnyString()),
+          (x) => x(It.isAnyString()),
         ).throws(new Error('err'));
 
         createResponseSpy.and.returnValue({ statusCode: 500 });
