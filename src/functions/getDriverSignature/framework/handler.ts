@@ -6,7 +6,6 @@ import { createResponse } from '@dvsa/mes-microservice-common/application/api/cr
 import { HttpStatus } from '@dvsa/mes-microservice-common/application/api/http-status';
 import { getPathParam } from '@dvsa/mes-microservice-common/framework/validation/event-validation';
 import { DriverErrorMessages } from '../../../common/application/driver/DriverErrMessages';
-import { getMicrosoftTokenResponse } from '../../../common/application/auth/GetToken';
 import { findDriverSignature } from '../../../common/application/driver/FindDriverSignature';
 import { Metric } from '../../../common/application/metric/metric';
 
@@ -20,9 +19,7 @@ export async function handler(event: APIGatewayProxyEvent) {
       return createResponse(DriverErrorMessages.BAD_REQUEST, HttpStatus.BAD_REQUEST);
     }
 
-    const tokenResponse = await getMicrosoftTokenResponse();
-
-    const driverPayload = await findDriverSignature(drivingLicenceNumber, tokenResponse.access_token);
+    const driverPayload = await findDriverSignature(drivingLicenceNumber);
     if (!driverPayload) {
       customMetric(Metric.DriverSignatureNotFound, 'Driver signature not found in DVLA system', drivingLicenceNumber);
       return createResponse(DriverErrorMessages.NOT_FOUND, HttpStatus.NOT_FOUND);

@@ -4,8 +4,6 @@ import { DriverSignature } from '@dvsa/mes-driver-schema';
 import * as response from '@dvsa/mes-microservice-common/application/api/create-response';
 
 import * as FindDriverSignature from '../../../../common/application/driver/FindDriverSignature';
-import * as GetToken from '../../../../common/application/auth/GetToken';
-import { MicrosoftResponse } from '../../../../common/domain/token.interface';
 import { handler } from '../handler';
 import { DriverErrorMessages } from '../../../../common/application/driver/DriverErrMessages';
 
@@ -32,16 +30,13 @@ describe('getSignature handler', () => {
     });
     createResponseSpy = spyOn(response, 'createResponse');
     spyOn(FindDriverSignature, 'findDriverSignature').and.callFake(moqFindDriverSignature.object);
-    spyOn(GetToken, 'getMicrosoftTokenResponse').and.returnValue(Promise.resolve({
-      access_token: 'abc123',
-    } as MicrosoftResponse));
   });
 
   describe('handler', () => {
     describe('200', () => {
       it('should return a successful response with the payload', async () => {
         moqFindDriverSignature.setup(
-          (x) => x(It.isAnyString(), It.isAnyString()),
+          (x) => x(It.isAnyString()),
         ).returns(() => Promise.resolve(mockSignatureResponse));
 
         createResponseSpy.and.returnValue({ statusCode: 200 });
@@ -55,7 +50,7 @@ describe('getSignature handler', () => {
     describe('404', () => {
       it('should return a 404 not found when FindDriverSignature returns null', async () => {
         moqFindDriverSignature.setup(
-          (x) => x(It.isAnyString(), It.isAnyString()),
+          (x) => x(It.isAnyString()),
         ).returns(() => Promise.resolve(null));
 
         createResponseSpy.and.returnValue({ statusCode: 404 });
@@ -83,7 +78,7 @@ describe('getSignature handler', () => {
     describe('500', () => {
       it('should return an internal server error', async () => {
         moqFindDriverSignature.setup(
-          (x) => x(It.isAnyString(), It.isAnyString()),
+          (x) => x(It.isAnyString()),
         ).throws(new Error('err'));
 
         createResponseSpy.and.returnValue({ statusCode: 500 });
