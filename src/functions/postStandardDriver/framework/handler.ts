@@ -5,7 +5,6 @@ import {
 import { createResponse } from '@dvsa/mes-microservice-common/application/api/create-response';
 import { HttpStatus } from '@dvsa/mes-microservice-common/application/api/http-status';
 import { DriverErrorMessages } from '../../../common/application/driver/DriverErrMessages';
-import { getMicrosoftTokenResponse } from '../../../common/application/auth/GetToken';
 import { findStandardDriver } from '../../../common/application/driver/FindStandardDriverData';
 import { isPayloadValid } from '../../../common/application/validation/ValidatePayload';
 import { Metric } from '../../../common/application/metric/metric';
@@ -20,11 +19,9 @@ export async function handler(event: APIGatewayProxyEvent) {
       return createResponse(DriverErrorMessages.INVALID, HttpStatus.BAD_REQUEST);
     }
 
-    const tokenResponse = await getMicrosoftTokenResponse();
-
     const { drivingLicenceNumber, enquiryRefNumber } = payload;
 
-    const driverPayload = await findStandardDriver(drivingLicenceNumber, enquiryRefNumber, tokenResponse.access_token);
+    const driverPayload = await findStandardDriver(drivingLicenceNumber, enquiryRefNumber);
     if (!driverPayload) {
       customMetric(
         Metric.DriverStandardDataNotFound,

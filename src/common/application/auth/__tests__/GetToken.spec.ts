@@ -1,45 +1,74 @@
-import MockAdapter from 'axios-mock-adapter';
-import * as CheckToken from '../CheckTokenExpiry';
-import { axiosClient, getMicrosoftTokenResponse } from '../GetToken';
-import { MicrosoftResponse } from '../../../domain/token.interface';
+import { TokenService } from '../GetToken';
+import * as configHelpersMock from '../../../domain/config-helpers';
 
-describe('Token Service', () => {
-  let mockClient: MockAdapter;
-  const mockMicrosoftResponse = {
-    token_type: 'token',
-    access_token: 'access',
-  } as MicrosoftResponse;
+describe('TokenService', () => {
+  let tokenService: TokenService;
 
-  beforeAll(() => {
-    mockClient = new MockAdapter(axiosClient);
-
-    process.env.TOKEN_ENDPOINT = '/endpoint';
-  });
-
-  afterEach(() => {
-    mockClient.reset();
-  });
-
-  afterAll(() => {
-    mockClient.restore();
+  beforeEach(() => {
+    tokenService = new TokenService();
   });
 
   describe('getMicrosoftTokenResponse', () => {
-    it('should get Microsoft token response', async () => {
-      mockClient.onPost('/endpoint').reply(200, { ...mockMicrosoftResponse });
+    beforeEach(() => {
+      spyOn(tokenService, 'getNewTokenResponse').and.callThrough();
+      spyOn(tokenService, 'isJWTExpired').and.callThrough();
+    });
 
-      // Get fresh response when tokenResponse is undefined
-      const resp1 = await getMicrosoftTokenResponse();
-      expect(resp1).toEqual(mockMicrosoftResponse);
+    it('should return a new token when no token is cached', async () => {
+      tokenService.getNewTokenResponse = jasmine.createSpy().and.returnValue(Promise.resolve({
+        data: {
+          access_token: 'new_token',
+          expires_in: '3600',
+          token_type: 'Bearer',
+          scope: 'mock_scope',
+        },
+        status: 200,
+        statusText: 'OK',
+        headers: {},
+        config: {},
+      }));
 
-      // Get fresh response when tokenResponse is expired
-      const resp2 = await getMicrosoftTokenResponse();
-      expect(resp2).toEqual(mockMicrosoftResponse);
+      const result = await tokenService.getMicrosoftTokenResponse();
+      expect(result.access_token).toEqual('new_token');
+    });
 
-      // Reuse response when not expired
-      spyOn(CheckToken, 'isJWTExpired').and.returnValue(false);
-      const resp3 = await getMicrosoftTokenResponse();
-      expect(resp3).toEqual(mockMicrosoftResponse);
+    it('should return a new token when the cached token is expired', async () => {
+      tokenService.getNewTokenResponse = jasmine.createSpy().and.returnValue(Promise.resolve({
+        data: {
+          access_token: 'new_token',
+          expires_in: '3600',
+          token_type: 'Bearer',
+          scope: 'mock_scope',
+        },
+        status: 200,
+        statusText: 'OK',
+        headers: {},
+        config: {},
+      }));
+
+      tokenService.isJWTExpired = jasmine.createSpy().and.returnValue(true);
+
+      const result = await tokenService.getMicrosoftTokenResponse();
+      expect(result.access_token).toEqual('new_token');
+    });
+  });
+
+  describe('getSecrets', () => {
+    it('should get secrets from AWS Secrets Manager', async () => {
+      process.env.SECRET_NAME = 'test_secret_name';
+      const mockSecrets = {
+        CLIENT_ID: 'aws_client_id',
+        CLIENT_SECRET: 'aws_client_secret',
+        API_KEY: 'aws_api_key',
+      };
+
+      spyOn(configHelpersMock, 'getEnvSecrets').and.returnValue(Promise.resolve(mockSecrets));
+
+      await tokenService.getSecrets();
+
+      expect(tokenService.clientId).toEqual('aws_client_id');
+      expect(tokenService.clientSecret).toEqual('aws_client_secret');
+      expect(tokenService.apiKey).toEqual('aws_api_key');
     });
   });
 });
