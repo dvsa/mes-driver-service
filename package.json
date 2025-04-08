@@ -31,10 +31,11 @@
   "dependencies": {
     "@dvsa/mes-driver-schema": "^0.0.2",
     "@dvsa/mes-microservice-common": "1.1.12",
-    "axios": "^1.6.5",
-    "joi": "^17.11.0",
-    "jwt-decode": "^3.1.2",
-    "qs": "^6.11.2"
+    "@aws-sdk/client-secrets-manager": "^3.777.0",
+    "axios": "^1.8.4",
+    "joi": "^17.13.3",
+    "jwt-decode": "^4.0.0",
+    "qs": "^6.14.0"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.126",

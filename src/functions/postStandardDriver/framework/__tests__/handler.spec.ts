@@ -4,8 +4,6 @@ import { DriverStandard } from '@dvsa/mes-driver-schema';
 import * as response from '@dvsa/mes-microservice-common/application/api/create-response';
 
 import * as GetStandardDriverData from '../../../../common/application/driver/FindStandardDriverData';
-import * as GetToken from '../../../../common/application/auth/GetToken';
-import { MicrosoftResponse } from '../../../../common/domain/token.interface';
 import { handler } from '../handler';
 import { DriverErrorMessages } from '../../../../common/application/driver/DriverErrMessages';
 
@@ -31,16 +29,13 @@ describe('getStandardDriver handler', () => {
     });
     createResponseSpy = spyOn(response, 'createResponse');
     spyOn(GetStandardDriverData, 'findStandardDriver').and.callFake(moqFindStandardDriver.object);
-    spyOn(GetToken, 'getMicrosoftTokenResponse').and.returnValue(Promise.resolve({
-      access_token: 'abc123',
-    } as MicrosoftResponse));
   });
 
   describe('handler', () => {
     describe('200', () => {
       it('should return a successful response with the payload', async () => {
         moqFindStandardDriver.setup(
-          (x) => x(It.isAnyString(), It.isAnyString(), It.isAnyString()),
+          (x) => x(It.isAnyString(), It.isAnyString()),
         ).returns(() => Promise.resolve(mockStandardDriverResponse));
 
         createResponseSpy.and.returnValue({ statusCode: 200 });
@@ -54,7 +49,7 @@ describe('getStandardDriver handler', () => {
     describe('404', () => {
       it('should return a 404 not found when GetStandardDriver returns null', async () => {
         moqFindStandardDriver.setup(
-          (x) => x(It.isAnyString(), It.isAnyString(), It.isAnyString()),
+          (x) => x(It.isAnyString(), It.isAnyString()),
         ).returns(() => Promise.resolve(null));
 
         createResponseSpy.and.returnValue({ statusCode: 404 });
@@ -84,7 +79,7 @@ describe('getStandardDriver handler', () => {
     describe('500', () => {
       it('should return an internal server error', async () => {
         moqFindStandardDriver.setup(
-          (x) => x(It.isAnyString(), It.isAnyString(), It.isAnyString()),
+          (x) => x(It.isAnyString(), It.isAnyString()),
         ).throws(new Error('err'));
 
         createResponseSpy.and.returnValue({ statusCode: 500 });
