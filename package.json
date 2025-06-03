@@ -29,8 +29,8 @@
     "sonar-scanner": "node_modules/sonar-scanner/bin/sonar-scanner"
   },
   "dependencies": {
-    "@dvsa/mes-driver-schema": "^0.0.2",
-    "@dvsa/mes-microservice-common": "1.1.12",
+    "@dvsa/mes-driver-schema": "^1.0.1",
+    "@dvsa/mes-microservice-common": "1.2.0",
     "@aws-sdk/client-secrets-manager": "^3.777.0",
     "axios": "^1.8.4",
     "joi": "^17.13.3",
