@@ -12,7 +12,7 @@ permissions:
 
 jobs:
   runs-deploy:
-    uses: dvsa/des-workflow-actions/.github/workflows/deploy-backend.yaml@main
+    uses: dvsa/des-workflow-actions/.github/workflows/deploy-backend.yaml@mb-sonarqube-upgrade-test
     with:
       component: 'api'
     secrets: inherit
