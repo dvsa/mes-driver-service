@@ -3,6 +3,7 @@ import { DriverSignature } from '@dvsa/mes-driver-schema';
 import { HttpStatus } from '@dvsa/mes-microservice-common/application/api/http-status';
 import { getDriverBaseEndpoint } from '../../framework/DriverEndpoint';
 import { TokenService } from '../auth/GetToken';
+import { driverApiValidateStatus } from './DriverApiValidateStatus';
 
 export const axiosInstance = axios.create();
 
@@ -24,6 +25,7 @@ export async function findDriverSignature(
         'x-api-key': tokenService.apiKey,
         'Content-Type': 'application/json',
       },
+      validateStatus: driverApiValidateStatus,
     },
   );
 
