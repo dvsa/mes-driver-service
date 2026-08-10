@@ -2,6 +2,7 @@ import { DriverStandard } from '@dvsa/mes-driver-schema';
 import { axiosInstance, findStandardDriver } from '../FindStandardDriverData';
 import { TokenService } from '../../auth/GetToken';
 import * as DriverEndpoint from '../../../framework/DriverEndpoint';
+import * as ConfigHelpers from '../../../domain/config-helpers';
 
 describe('findStandardDriver', () => {
   const mockDriverStandardData: DriverStandard = {
@@ -15,11 +16,9 @@ describe('findStandardDriver', () => {
 
   beforeEach(() => {
     spyOn(DriverEndpoint, 'getDriverBaseEndpoint').and.returnValue('https://mock-driver-api');
-    // eslint-disable-next-line no-unused-vars
-    spyOn(TokenService.prototype, 'getSecrets').and.callFake(function setApiKey(this: TokenService) {
-      this.apiKey = 'mock-api-key';
-      return Promise.resolve();
-    });
+    spyOn(ConfigHelpers, 'getEnvSecrets').and.returnValue(
+      Promise.resolve({ API_KEY: 'mock-api-key', CLIENT_ID: 'mock-client-id', CLIENT_SECRET: 'mock-client-secret' }),
+    );
     spyOn(TokenService.prototype, 'getMicrosoftTokenResponse').and.returnValue(
       Promise.resolve({
         access_token: 'mock-token',
